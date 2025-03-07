@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Label,
   Listbox,
@@ -14,40 +13,32 @@ type Props = {
   categories: Category[];
   isLoading: boolean;
   handleFilterChange: (category: Category) => void;
+  filter: Category;
+  withAll: Category[];
 };
 
 export const Select = ({
   categories,
   isLoading,
   handleFilterChange,
+  filter,
+  withAll,
 }: Props) => {
-  const allCategory: Category = {
-    idCategory: "all",
-    strCategory: "All",
-    strCategoryDescription: "",
-    strCategoryThumb: "",
-  };
-
-  const withAll = [allCategory, ...categories];
-
-  const [selected, setSelected] = useState<Category>(withAll[0]);
-
   const handleChange = (category: Category) => {
-    setSelected(category);
     handleFilterChange(category);
   };
 
   return (
     <>
       {!isLoading && (
-        <Listbox value={selected} onChange={handleChange}>
+        <Listbox value={filter} onChange={handleChange}>
           <Label className="block text-xl font-medium text-white">
             Category
           </Label>
           <div className="relative mt-2">
             <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
               <span className="col-start-1 row-start-1 truncate pr-6">
-                {selected.strCategory}
+                {filter.strCategory}
               </span>
               <ChevronUpDownIcon
                 aria-hidden="true"

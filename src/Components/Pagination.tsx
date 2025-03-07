@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from "@heroicons/react/20/solid";
+import { Recipe } from "../types/types";
 
 type PaginationProps = {
   recipesPerPage: number;
   totalRecipes: number | undefined;
   onPageChange: (page: number) => void;
+  recipes: Recipe[] | undefined;
 };
 
 export const Pagination = ({
   recipesPerPage,
   totalRecipes = 1,
   onPageChange,
+  recipes,
 }: PaginationProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -46,8 +49,13 @@ export const Pagination = ({
     pages.push(i);
   }
 
+  useEffect(() => {
+    setCurrentPage(1);
+    onPageChange(1)
+  }, [totalRecipes]);
+
   return (
-    <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
+    <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 bg-peachBrown ">
       <div className="-mt-px flex w-0 flex-1">
         <span
           onClick={() => goToPage(currentPage - 1)}
@@ -61,7 +69,7 @@ export const Pagination = ({
         </span>
       </div>
 
-      <div className="hidden md:-mt-px md:flex">
+      <div className="hidden md:-mt-px md:flex ">
         {pages.map((page) => (
           <span
             key={page}

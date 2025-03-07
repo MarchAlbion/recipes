@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Recipe } from "../types/types";
+import { Category, Recipe } from "../types/types";
 import { Pagination } from "./Pagination";
 import { RecipesList } from "./RecipesList";
 
 type Props = {
   recipes: Recipe[] | undefined;
+  filter: Category;
 };
 
 export const Main = ({ recipes }: Props) => {
@@ -15,7 +16,6 @@ export const Main = ({ recipes }: Props) => {
 
   const currentRecipes = recipes?.slice(indexOfFirstRecipe, indexOfLastRecipe);
 
-
   const onPageChange = (page: number) => {
     setPage(page);
   };
@@ -24,8 +24,9 @@ export const Main = ({ recipes }: Props) => {
       <RecipesList recipes={currentRecipes} />
       <Pagination
         totalRecipes={recipes?.length}
-        recipesPerPage={7}
+        recipesPerPage={9}
         onPageChange={onPageChange}
+        recipes={recipes}
       />
     </main>
   );

@@ -1,10 +1,20 @@
 import { Link, useParams } from "react-router";
 import { useRecipeById } from "../utils/hooks/useRecipeById";
+import { motion } from "framer-motion";
+import { Recipe } from "../types/types";
 
-export const RecipeDetail = () => {
+type Props = {
+  handleFavourite: (recipe: Recipe) => void;
+  favourite: Recipe[];
+};
+
+export const RecipeDetail = ({ handleFavourite, favourite }: Props) => {
   const { id } = useParams();
   const { data: recipe, isLoading } = useRecipeById(id as string);
 
+  const isFavourite = favourite.some((fav) => fav.idMeal === recipe?.idMeal);
+
+  console.log(favourite);
   const extractIngredients = (recipe: any) => {
     if (!isLoading) {
       const ingredients = Object.entries(recipe)
@@ -26,74 +36,80 @@ export const RecipeDetail = () => {
   };
 
   return (
-    <div className="bg-white ">
-      <Link className=" text-xl text-center" to="/">
-        Home
-      </Link>
-      <div className="mx-auto   sm:px-6 sm:py-32 lg:px-8 h-screen ">
-        <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
-          <svg
-            viewBox="0 0 1024 1024"
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 -z-10 size-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
-          >
-            <circle
-              r={512}
-              cx={512}
-              cy={512}
-              fill="url(#759c1415-0410-454c-8f7c-9a820de03641)"
-              fillOpacity="0.7"
-            />
-            <defs>
-              <radialGradient id="759c1415-0410-454c-8f7c-9a820de03641">
-                <stop stopColor="#7775D6" />
-                <stop offset={1} stopColor="#E935C1" />
-              </radialGradient>
-            </defs>
-          </svg>
-          <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto py-5 lg:text-left">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {recipe?.strMeal}
-            </h2>
-            {!isLoading && (
-              <div className="mt-6 text-pretty text-xs text-gray-300 flex justify-between">
-                <ul>
-                  <li className="text-orange-500"> Ingridients:</li>
-                  {extractIngredients(recipe)?.map((ingr) => {
-                    return (
-                      <li key={Math.random() * 20}>
-                        {ingr as string}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <ul>
-                  <li className="text-green-600">Measures:</li>
-                  {measures(recipe)?.map((mes) => {
-                    return (
-                      <li key={(Math.random() * 20)}>
-                        {mes as string}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-            <div className="text-xs pt-20 text-left text-yellow-500">
-              {recipe?.strInstructions}
-            </div>
-            <a href={recipe?.strYoutube} className="text-red-600 font-bold">
-              YouTube
-            </a>
+    <div className="bg-prach pb-16 pt-24 sm:pb-24 sm:pt-32 xl:pb-32">
+      <div className="bg-gray-900 pb-20 sm:pb-24 xl:pb-0">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-x-8 gap-y-10 px-6 sm:gap-y-8 lg:px-8 xl:flex-row xl:items-stretch">
+          <div className="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">
+            <motion.div
+              initial={{ x: "-10vw", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 50, damping: 25 }}
+              className="relative aspect-[2/1] h-full md:-mx-8 xl:mx-0 xl:aspect-auto"
+            >
+              <img
+                alt=""
+                src={recipe?.strMealThumb}
+                className="absolute inset-0 size-full rounded-2xl bg-gray-800 object-cover shadow-2xl"
+              />
+            </motion.div>
           </div>
-          <div className="relative mt-16 h-80 lg:mt-8">
-            <img
-              alt="App screenshot"
-              src={recipe?.strMealThumb}
-              width={1824}
-              height={1080}
-              className="absolute left-0 top-0 w-[57rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
-            />
+          <div className="w-full max-w-2xl xl:max-w-none xl:flex-auto xl:px-16 xl:py-24">
+            <div className=" flex justify-between">
+              <Link
+                to="/"
+                className="text-lg text-orange-400 hover:scale-105 transition-transform duration-50"
+              >
+                ← Home
+              </Link>
+              <div
+                className={`text-lg ${
+                  isFavourite ? "text-red-500" : "text-orange-400"
+                } cursor-pointer hover:scale-105 transition-transform duration-50`}
+                onClick={() => handleFavourite(recipe as Recipe)}
+              >
+                {!isFavourite
+                  ? "⭐Add to favourites"
+                  : "Delete from favourites"}
+              </div>
+            </div>
+
+            <figure className="relative isolate pt-6 sm:pt-12">
+              <blockquote className="text-xl/8 font-semibold text-white sm:text-2xl/9">
+                <div className="flex justify-between">
+                  <div className="mb-3 text-sm text-green-500">
+                    Ingridients:
+                  </div>
+                  <div className="mb-3 text-sm text-green-500">Measures:</div>
+                </div>
+
+                <div className="text-xs flex justify-between overflow-y-scroll max-h-32">
+                  <ul>
+                    {extractIngredients(recipe)?.map((ingr) => {
+                      return (
+                        <li key={Math.random() * 100}>{ingr as string}</li>
+                      );
+                    })}
+                  </ul>
+                  <div>
+                    <ul>
+                      {measures(recipe)?.map((mes) => {
+                        return (
+                          <li key={Math.random() * 100}>{mes as string}</li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </blockquote>
+              <figcaption className="mt-8 text-base">
+                <div className="font-semibold text-white text-sm overflow-y-scroll max-h-36">
+                  {recipe?.strInstructions}
+                </div>
+                <a href={recipe?.strYoutube} className="mt-1 text-red-600 ">
+                  YouTube
+                </a>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </div>

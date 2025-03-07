@@ -3,8 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      backgroundImage: {
-        bread: "/images/bread.jpg",
+      colors: {
+        peach: "#E3B68F",
+        peachBrown: "#f3e6dc",
       },
     },
   },

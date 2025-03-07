@@ -6,12 +6,12 @@ export const getFilteredRecipes = (
 ) => {
   if (!allRecipes) return [];
 
-  if (selected?.idCategory === "all") {
+  if (!selected || selected.idCategory === "all") {
     return allRecipes;
   }
 
   const filteredRecipes = allRecipes.filter(
-    (recipe: Recipe) => recipe.strCategory === selected?.strCategory
+    (recipe: Recipe) => recipe.strCategory === selected.strCategory
   );
 
   return filteredRecipes;
